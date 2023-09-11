@@ -1,0 +1,215 @@
+;;PROJECT CODE 
+PRINT MACRO P1
+MOV DX,OFFSET P1
+MOV AH,9
+INT 21H
+ENDM
+.MODEL SMALL
+.STACK 100H
+.DATA
+STR1 DB 'SELECT COLOR$'
+STR2 DB'PRESS 1 FOR WHITE COLOR SQUARE$'
+STR22 DB'PRESS 2 FOR GREEN COLOR SQUARE$'
+STR222 DB'PRESS 3 FOR RED COLOR SQUARE$'
+;;;;;
+STR3 DB 'PRESS ANY KEY TO SET VALUES FOR A BOX$'
+str4 db 'ENTER width value$'
+str44 db 'ENTER value to set CORNER OF SCREEN$'
+STR5 db 'PRESS 0 to EXIT$'
+msg1 db 'THANKYOU for using THE CODE!$'
+MSG2 db 'This is your required box :) $'
+num1 db ?
+num2 db ?
+
+.CODE
+
+MAIN PROC
+MOV AX,@DATA
+
+MOV DS,AX
+Z1: ;;main loop 
+
+CALL ENTERKEY
+PRINT STR1
+CALL ENTERKEY
+PRINT STR2
+CALL ENTERKEY
+PRINT STR22
+CALL ENTERKEY
+PRINT STR222
+CALL ENTERKEY
+PRINT STR5
+CALL ENTERKEY
+
+MOV DL,'1'
+MOV AH,1 ;INPUT FROM USER for color
+INT 21H
+CMP AL,DL
+JE Z2
+MOV DL,'2'
+CMP AL,DL
+JE Z3
+MOV DL,'3'
+CMP AL,DL
+JE Z4
+MOV DL,'0'
+CMP AL,DL
+JMP L2 ;exit  
+
+Z2: ;NESTED LOOP
+CALL ENTERKEY
+PRINT STR3   ;press 2 for width
+CALL ENTERKEY
+MOV AH,1   ;input for width choice
+INT 21H
+JMP L1  
+LOOP Z2 ;end nested loop
+
+LOOP Z1 ;main loop endd
+
+Z3: ;yeh nahi chal raha
+CALL ENTERKEY
+PRINT STR3   ;press 2 for width
+CALL ENTERKEY
+MOV AH,1   ;input for width choice
+INT 21H
+
+JMP L3  
+LOOP Z3
+
+Z4: ;yeh nahi chal raha
+CALL ENTERKEY
+PRINT STR3   ;press 2 for width
+CALL ENTERKEY
+MOV AH,1   ;input for width choice
+INT 21H
+
+JMP L4  
+LOOP Z4
+
+
+
+L1: 
+CALL ENTERKEY
+PRINT str44 ;enter lines position
+CALL ENTERKEY
+mov ah,1  ;user input TO SET CORNERS
+int 21h
+
+sub al,48
+mov num2,al
+;;;
+call ENTERKEY
+PRINT str4 ;enter width
+CALL ENTERKEY
+mov ah,1  ;user input for width
+int 21h
+
+sub al,48
+mov num1,al
+
+MOV AH,06H
+MOV AL,3
+
+MOV BH,01111000B 
+MOV CH,num2
+MOV CL,num2
+MOV DH,num1 
+MOV DL,num1
+INT 10H
+CALL ENTERKEY
+PRINT MSG2
+jmp Z1
+LOOP L1
+
+L3:
+CALL ENTERKEY
+PRINT str44 ;enter lines position
+CALL ENTERKEY
+mov ah,1  ;user input TO SET CORNERS
+int 21h
+
+sub al,48
+mov num2,al
+;;;
+call ENTERKEY
+PRINT str4 ;enter width
+CALL ENTERKEY
+mov ah,1  ;user input for width
+int 21h
+sub al,48
+mov num1,al
+
+
+MOV AH,06H
+MOV AL,10
+
+MOV BH,00100000b 
+MOV CH,num2
+MOV CL,num2
+MOV DH,num1 ;yeh nahi ho pa raha
+MOV DL,num1
+INT 10H
+CALL ENTERKEY
+PRINT MSG2
+
+jmp Z1
+LOOP L3
+
+
+L4:
+CALL ENTERKEY
+PRINT str44 ;enter lines position
+CALL ENTERKEY
+mov ah,1  ;user input TO SET CORNERS
+int 21h
+
+sub al,48
+mov num2,al
+call ENTERKEY
+PRINT str4 ;enter width
+CALL ENTERKEY
+mov ah,1  ;user input for width
+int 21h
+sub al,48
+mov num1,al
+
+MOV AH,06H
+MOV AL,10
+
+MOV BH,01001000b 
+MOV CH,num2
+MOV CL,num2
+MOV DH,num1 ;yeh nahi ho pa raha
+MOV DL,num1
+INT 10H
+CALL ENTERKEY
+PRINT MSG2
+
+jmp Z1
+LOOP L4
+
+
+
+
+
+L2: ;EXIT CODE
+PRINT msg1 ;;constant msg 
+mov ah,4CH
+int 21h 
+loop L2 ;end loop
+
+MOV AH,4CH
+INT 21H
+MAIN ENDP
+ENTERKEY PROC
+MOV DX,10
+MOV AH,2
+INT 21H
+MOV DX,13
+MOV AH,2
+INT 21H
+RET
+ENTERKEY ENDP
+
+END MAIN
